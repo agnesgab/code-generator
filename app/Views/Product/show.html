@@ -1,0 +1,23 @@
+{% include 'templates/header.html' %}
+<a class="btn btn-primary" href="/">Atpakaļ</a>
+<div class="container container-show">
+    <div class="card card-show">
+        <img src="public/img/{{ product.itemCode }}.jpg">
+        <div>
+            <form class="card-body" method="get" action="/code">
+                <h5 class="card-title">{{ product.itemDescription }}</h5>
+                <input type="hidden" name="CODE" value="{{ product.itemCode }}">
+                {% for option in product.options %}
+                <label>{{ option.varietyDescription }}:</label>
+                <select name="{{ option.varietyCode}}">
+                    {% for key, value in option.colorsAndSizes %}
+                    <option value="{{ key }}">{{ value[0] }}</option>
+                    {% endfor %}
+                </select>
+                {% endfor %}
+                <button class="btn btn-primary" type="submit">Apstiprināt</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% include 'templates/footer.html' %}
