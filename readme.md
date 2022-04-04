@@ -8,7 +8,7 @@ This program generates code based on user input which includes item number and s
 Project is created with:
 * PHP 7.4
 * HTML5
-* CSS
+* CSS / Bootstrap v5.1.3
 
 ## Setup
 To run this project, install Composer:
