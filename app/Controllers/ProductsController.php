@@ -2,59 +2,34 @@
 
 namespace App\Controllers;
 
-use App\Data;
-use App\Models\Product;
-use App\Models\VarietyOption;
+use App\Services\Product\Index\ProductIndexService;
+use App\Services\Product\Show\ProductShowRequest;
+use App\Services\Product\Show\ProductShowService;
 use App\View;
 
 class ProductsController
 {
     public function index(): View
     {
-        $data = new Data();
-        $items = $data->getItems();
+        $service = new ProductIndexService();
+        $response = $service->execute();
 
-        $products = [];
-        foreach ($items as $item) {
-            $products[] = new Product($item['code'], $item['description'], $item['varieties']);
-        }
-
-        return new View('Product/index.html', ['products' => $products]);
+        return new View('Product/index.html', ['products' => $response->getProducts()]);
     }
 
     public function show(array $vars): View
     {
-        $data = new Data();
-        $items = $data->getItems();
-        $varieties = $data->getVarieties();
+        $itemCode = (int)$vars['id'];
+        $request = new ProductShowRequest($itemCode);
+        $service = new ProductShowService();
+        $response = $service->execute($request);
 
-        $product = null;
-        foreach ($items as $item) {
-            if ($item['code'] == $vars['id'])
-                $product = new Product($item['code'], $item['description'], $item['varieties']);
-        }
-
-        $productVarietyOptions = [];
-        foreach ($varieties as $variety) {
-            foreach ($product->getRequiredVarieties() as $value) {
-                if ($value == $variety['code']) {
-                    $productVarietyOptions[] = $variety;
-                }
-            }
-        }
-
-        sort($productVarietyOptions);
-        foreach ($productVarietyOptions as $varietyOption) {
-            $product->setVarietyOptions(new VarietyOption($varietyOption['code'], $varietyOption['options'], $varietyOption['description']));
-        }
-
-        return new View('Product/show.html', ['product' => $product]);
+        return new View('Product/show.html', ['product' => $response->getProduct()]);
     }
 
     public function generateSelectedItemCode(): View
     {
-        $submittedInput = $_GET;
-        $code = implode('.', $submittedInput);
+        $code = implode('.', $_GET);
 
         return new View('Product/code.html', ['code' => $code]);
     }

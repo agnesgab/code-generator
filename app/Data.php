@@ -6,7 +6,7 @@ class Data {
 
     public function getData()
     {
-        return json_decode(file_get_contents("src/data.json"), true);
+        return json_decode(file_get_contents("fixtures/data.json"), true);
     }
 
     public function getItems()
